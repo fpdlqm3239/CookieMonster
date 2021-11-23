@@ -1,0 +1,9 @@
+<%@page import="xyz.itwill.dto.MemberDTO"%>
+
+<%
+	MemberDTO loginMember=(MemberDTO)session.getAttribute("loginMember");
+	if(loginMember==null) {
+		response.sendRedirect(request.getContextPath()+"/view/error_page/error.jsp");
+		return;
+	}
+%>

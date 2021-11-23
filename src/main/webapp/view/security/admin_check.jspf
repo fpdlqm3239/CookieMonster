@@ -1,0 +1,18 @@
+<%@page import="xyz.itwill.dto.MemberDTO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%
+MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+
+if (loginMember == null) {
+	loginMember = new MemberDTO();
+	loginMember.setStatus("9");
+	loginMember.setName("admin");
+	System.out.println("관리자등급 임시발급하지만 좋은 접근은 아님");
+}
+if (loginMember == null || !loginMember.getStatus().equals("9")) {
+	response.sendRedirect(request.getContextPath() + "/view/error_page/error.jsp");
+	System.out.println("관리자 로그인 실패");
+	return;
+}
+%>

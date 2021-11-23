@@ -1,0 +1,40 @@
+<%@page import="xyz.itwill.util.Utility"%>
+<%@page import="xyz.itwill.dao.MemberDAO"%>
+<%@page import="xyz.itwill.dto.MemberDTO"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%
+
+if (request.getMethod().equals("GET")) {
+	response.sendRedirect(request.getContextPath() + "/view/error_page/error.jsp");
+	return;
+}
+
+String phone = request.getParameter("phone");
+String name = request.getParameter("name");
+String email = request.getParameter("email");
+
+MemberDTO member = MemberDAO.getDAO().selectMember(email);
+
+if(member == null){
+	session.setAttribute("message", "존재하지 않는 폰번호입니다..");
+	response.sendRedirect(request.getContextPath()+"/view/member_page/find_pw.jsp");
+	return;
+} else if(!member.getName().equals(name)){
+	session.setAttribute("message", "존재하지 않는 이름입니다.");
+	response.sendRedirect(request.getContextPath()+"/view/member_page/find_pw.jsp");
+	return;
+} else if(!member.getEmail().equals(email)){
+	session.setAttribute("message", "존재하지 않는 이메일입니다.");
+	response.sendRedirect(request.getContextPath()+"/view/member_page/find_pw.jsp");
+	return;
+}
+
+if(member.getPhone().equals(phone) && member.getName().equals(name) && member.getEmail().equals(email)){
+	session.setAttribute("message", "초기화된 비밀번호는 Jlee240! 입니다. 반드시 마이페이지에서 변경해주세요");
+	response.sendRedirect(request.getContextPath()+"/view/member_page/login.jsp");
+	return;
+}
+
+%>	

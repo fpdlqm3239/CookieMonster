@@ -1,0 +1,42 @@
+<%@page import="xyz.itwill.util.Utility"%>
+<%@page import="xyz.itwill.dao.MemberDAO"%>
+<%@page import="xyz.itwill.dto.MemberDTO"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+	
+<%
+	request.setCharacterEncoding("UTF-8");
+	
+	if(request.getMethod().equals("GET")){
+		response.sendRedirect(request.getContextPath()+"/view/error_page/error.jsp");
+		return;	
+	}
+	
+	
+	String email=request.getParameter("mid");
+	String passwd=request.getParameter("mpw_1");
+	if(passwd==null || passwd.equals("")) {
+		response.sendRedirect(request.getContextPath()+"/view/member_page/passwd_reset.jsp");
+	} else {
+		passwd=Utility.encrypt(request.getParameter("mpw_1"));
+	}
+	
+	MemberDTO member = MemberDAO.getDAO().selectMember(email);
+	
+	MemberDTO updateMember = new MemberDTO();
+	updateMember.setPw(passwd);
+	updateMember.setName(member.getName());
+	updateMember.setPhone(member.getPhone());
+	updateMember.setBirth(member.getBirth());
+	updateMember.setMainAddress(member.getMainAddress());
+	updateMember.setDetailAddress(member.getDetailAddress());
+	updateMember.setZipcode(member.getZipcode());
+	updateMember.setEmail(member.getEmail());
+
+	
+	MemberDAO.getDAO().updateMember(member);
+	
+	response.sendRedirect(request.getContextPath()+"/view/member_page/login.jsp");
+
+%>

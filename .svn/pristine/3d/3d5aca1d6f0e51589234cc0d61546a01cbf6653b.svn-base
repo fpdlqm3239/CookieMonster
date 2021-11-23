@@ -1,0 +1,175 @@
+<%@page import="xyz.itwill.dao.NoticeDAO"%>
+<%@page import="xyz.itwill.dto.NoticeDTO"%>
+<%@page import="xyz.itwill.dto.MemberDTO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+    
+<%
+	//글번호 없이 비정상 요청 -에러페이지 이동
+	if(request.getParameter("no")==null){
+		response.sendRedirect(request.getContextPath()+"/view/error_page/error.jsp");
+		return;
+	}
+	
+	//전달값 받아 저장
+	int no = Integer.parseInt(request.getParameter("no"));
+	String pageNum = request.getParameter("pageNum");
+	String search = request.getParameter("search");
+	String keyword = request.getParameter("keyword");
+	
+	//글번호 받아 검색
+	NoticeDTO notice = NoticeDAO.getDAO().selectNoNotice(no);
+	
+	//검색된 공지글 없이 비정상 요청 -에러페이지 이동
+	if(notice==null) {
+		response.sendRedirect(request.getContextPath()+"/view/error_page/error.jsp");
+		return;
+	}
+	
+	//세션의 권한정보 받아 저장
+	MemberDTO loginMember = (MemberDTO)session.getAttribute("loginMember");
+	
+	//글번호 받아 글 조회수 증가
+	NoticeDAO.getDAO().updateReadCount(no);
+%>
+
+
+  
+<!DOCTYPE html>
+<html>
+<head>
+    <title>COOKIE MONSTER</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700"> 
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="../../maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/magnific-popup.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/jquery-ui.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/owl.theme.default.min.css">
+
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/aos.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style.css">  
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/generic.css">  
+    
+    <script src="../../unpkg.com/sweetalert%402.1.2/dist/sweetalert.min.js"></script>
+    <script src="<%=request.getContextPath()%>/js/jquery-3.3.1.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/jquery-ui.js"></script>
+	<script src="<%=request.getContextPath()%>/js/popper.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/owl.carousel.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/jquery.magnific-popup.min.js"></script>
+	<script src="<%=request.getContextPath()%>/js/aos.js"></script>
+	<script src="<%=request.getContextPath()%>/js/main.js"></script> 
+	<script src="http://maps.google.com/maps/api/js?v=3.3&amp;sensor=true"></script>
+	
+	<style>
+	
+	#board_menu{
+		float: right;
+		margin: 5px;
+	}
+	
+	#removeBtn, #modifyBtn{
+		float: right;
+		background-color: #424949; 
+		color: white; 
+		border-radius: 0.3em; 
+		border: 2px solid #424949;
+	}
+	</style>
+	
+</head>
+<body> 
+    <jsp:include page="/view/template/header.jsp"></jsp:include>
+ 
+ 
+   
+ <br><br><br><br><br><br>              
+ <div class="container">       
+    <div class="form-group row"> 
+        &nbsp;&nbsp;<div class="col-md-11" >
+            <h2 style="font-weight: bold">브랜드 이슈</h2>        
+     </div>            
+    
+    <br><br><br>                 
+    
+    <div id="board_menu">
+		<%-- 관리자면 삭제,수정 기능 제공 --%>
+		<% if(loginMember!=null && loginMember.getStatus().equals("9")) { %>
+ 			<button type="button" id="removeBtn">삭제</button>
+ 			<button type="button" id="modifyBtn">변경</button>
+ 		<% } %>	
+	</div>
+	<br><br>   
+	
+	<form id="boardForm" method="post">
+ 		<%-- 삭제, 수정 페이지 요청시 전달값 --%>
+ 		<input type="hidden" name="no" value="<%=notice.getNo()%>">
+ 		<%-- 게시글 목록 페이지 요청시 전달값 --%>
+ 		<input type="hidden" name="pageNum" value="<%=pageNum%>">
+ 		<input type="hidden" name="search" value="<%=search%>">
+ 		<input type="hidden" name="keyword" value="<%=keyword%>">
+ 	</form>
+	
+        <table class="table tbcenter" >   
+            <tr>
+              <th scope="col" style="width: 100%; text-align: left;"> &nbsp;&nbsp;제목 ㅣ <%=notice.getTitle()%> </th>
+            </tr>
+            
+             <tr>
+              <th scope="col" style="width: 15%; text-align: left; font-weight: 400;">
+              &nbsp;&nbsp;작성자 ㅣ <%=notice.getMemberNo()%>&nbsp;&nbsp;&nbsp;&nbsp;작성일 ㅣ <%=notice.getRegdate()%>&nbsp;&nbsp;&nbsp;&nbsp;조회수 ㅣ <%=notice.getReadcount()%>   
+              </th>                     
+            </tr>
+			
+			<tr>
+            	 <th scope="col" style="width: 15%; text-align: left; font-weight: 400;">&nbsp;&nbsp;			
+            	 <img src="<%=request.getContextPath()%>/view/images/<%=notice.getPicture()%>" width="200">
+ 				 </th>  
+			</tr>	
+			
+ 			<tr>
+             	 <th scope="col" style="width: 15%; text-align: left; font-weight: 400;"><%=notice.getContent().replace("\n", "<br>")%>
+            	</th>  
+ 			</tr>	             
+ 			        
+            <tr>
+             <th scope="col" style="text-align: right;"><a href="notice.jsp" class="btn btn-dark">목록</a></th>
+            </tr>
+            
+     </table>
+     </div>
+     </div> 
+    
+ 
+	<script type="text/javascript">
+ 	$("#removeBtn").click(function() {
+ 		if(confirm("정말로 게시글을 삭제 하시겠습니까?")) {
+ 			$("#boardForm").attr("action", "<%=request.getContextPath()%>/view/notice_page/notice_delete_action.jsp");
+ 			$("#boardForm").submit();
+ 		}
+ 	});	
+	$("#modifyBtn").click(function() {
+		$("#boardForm").attr("action", "<%=request.getContextPath()%>/view/notice_page/notice_modify.jsp");
+		$("#boardForm").submit();
+	});
+	</script>
+	
+	
+<div>
+
+  <jsp:include page="/view/template/footer.jsp"></jsp:include>
+  
+   </div>
+	
+</body>
+</html>
+
+	

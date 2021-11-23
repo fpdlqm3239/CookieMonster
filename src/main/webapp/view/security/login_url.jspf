@@ -1,0 +1,21 @@
+<%@page import="xyz.itwill.dto.MemberDTO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%
+MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+
+//로그인 필요한 페이지는 적극사용
+if (loginMember == null) {
+	String requestURI = request.getRequestURI();
+	String queryString = request.getQueryString();
+	if (queryString == null || queryString.equals("")) {
+		queryString = "";
+	} else {
+		queryString = "?" + queryString;
+	}
+
+	session.setAttribute("url", requestURI + queryString);
+	response.sendRedirect(request.getContextPath()+"/view/member_page/login.jsp");
+	return;
+}
+%>

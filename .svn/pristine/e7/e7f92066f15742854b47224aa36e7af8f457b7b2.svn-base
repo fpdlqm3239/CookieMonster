@@ -1,0 +1,123 @@
+
+<%@page import="xyz.itwill.dao.MemberDAO"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@include file="/view/security/login_check.jspf" %>
+
+<%
+
+	String message=(String)session.getAttribute("message");
+	if(message==null) {
+		message="";
+	} else {
+		session.removeAttribute("message");
+	}
+%>
+
+<!DOCTYPE html>
+<html>
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+<head>
+<title>COOKIE MONSTER</title>
+<meta charset="utf-8">
+<meta name="viewport" 
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link
+	 href="https://fonts.googleapis.com/css2?family=Anton&family=Nanum+Gothic:wght@400;700;800&display=swap"
+	 rel="stylesheet">
+
+<link rel="stylesheet"
+	href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/fonts/icomoon/style.css">
+<link rel="stylesheet"
+	href="../../maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/magnific-popup.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/jquery-ui.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/owl.carousel.min.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/owl.theme.default.min.css">
+
+<link rel="stylesheet" href="<%=request.getContextPath()%>/css/aos.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/style.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/generic.css">
+
+<script src="../../unpkg.com/sweetalert%402.1.2/dist/sweetalert.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/jquery-3.3.1.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/jquery-ui.js"></script>
+<script src="<%=request.getContextPath()%>/js/popper.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/bootstrap.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/owl.carousel.min.js"></script>
+<script
+	src="<%=request.getContextPath()%>/js/jquery.magnific-popup.min.js"></script>
+<script src="<%=request.getContextPath()%>/js/aos.js"></script>
+<script src="<%=request.getContextPath()%>/js/main.js"></script>
+<script src="http://maps.google.com/maps/api/js?v=3.3&amp;sensor=true"></script>
+
+</head>
+<body>
+	<jsp:include page="/view/template/header.jsp"></jsp:include>
+	
+  
+    <div class="site-section">
+      <div class="container">
+      <div class="row mb-5"></div>
+      <form id="info_pw" name="pwCheckForm" action="<%=request.getContextPath()%>/view/member_page/password_confirm_action.jsp" method="post">
+      <h2 class="h3 mb-3 text-black" style="text-align: center;">회원 정보 인증</h2>
+        <div class="row">
+          <div class="col-md-6 offset-md-3">
+            <div class="p-3 p-lg-5 border">
+              <div class="form-group">
+              </div>
+				<div class="form-group row">
+					<div class="col-md-12">
+						<label for="mid" class="text-black"><span	class="text-danger">*</span>이메일&nbsp;&nbsp;</label> 
+						<input type="text"	class="form-control" id="mid" name="email"  value= "<%=loginMember.getEmail()%>" readonly="readonly">
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-12">
+						<label for="mpw" class="text-black"><span	class="text-danger">*</span>패스워드&nbsp;&nbsp;</label> 
+						<input type="password"	class="form-control" id="mpw" name="passwd" placeholder="패스워드 입력">
+						<div id="message_1"></div>
+					</div>
+				</div>
+			  <button type="submit" class="btn btn-outline-dark btn-lg btn-block" id="pw_check" >패스워드 확인</button>
+            </div>
+          </div>
+        </div>
+        </form>
+        <!-- </form> -->
+      </div>
+    </div>
+     <script type="text/javascript">
+     $("#mpw").focus();
+
+     $("#info_pw").submit(function() {
+    	 $("#message_1").text("");
+      	
+      	if($("#mpw").val()=="") {
+      		$("#message_1").text("비밀번호를 입력해 주세요.");
+      		$("#mpw").focus();
+      		return false;
+      	}
+  
+     });
+	</script>
+
+	<div>
+		<jsp:include page="/view/template/footer.jsp"></jsp:include>
+	</div>
+
+</body>
+</html>
